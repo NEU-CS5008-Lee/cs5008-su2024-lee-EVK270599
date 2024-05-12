@@ -1,1 +1,2 @@
-cs5008 with Prof. Lee
+Kaustubha Eluri
+eluri.k@northeastern.edu
