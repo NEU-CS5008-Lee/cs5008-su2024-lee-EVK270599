@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-// name: Jeongkyu Lee 
-// email: jeo.lee@northeastern.edu
+// name: Kaustubha Eluri 
+// email: eluri.k@northeastern.edu
 
 int main() {
   printf("Hello World.  This is [YourName].\n");
