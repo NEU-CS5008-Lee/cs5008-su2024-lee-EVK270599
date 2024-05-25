@@ -1,7 +1,4 @@
-// name: <your name here>
-// email: <your email here>
-
-#include <stdio.h>   // stardard input/output library
+#include <stdio.h>   // standard input/output library
 #include <stdbool.h> // standard boolean library: bool, true, false
 #include <stdlib.h>  // library that contains malloc, rand, and srand
 #include <time.h>    // time functions
@@ -9,7 +6,6 @@
 
 #define MAXMAGNITUDE 100   // the biggest number to be inserted in the queue
 #define HOWMANY 10           // how many numbers to be inserted in the queue
-
 
 /*
  *   queue
@@ -27,8 +23,6 @@
  *      NULL
  */
 
-
-
 //---------------------------- NODE ---------------------------- 
 // doubly linked list node
 typedef struct nd {
@@ -38,7 +32,7 @@ typedef struct nd {
 } node_t;
 
 // create new node with value d and NULL left & right pointers
-node_t* newNode (int d) {
+node_t* newNode(int d) {
   node_t* n_p = NULL;                     // temp pointer to hold new node
   n_p = (node_t*)malloc(sizeof(node_t));  // create new node
   if (n_p != NULL) {
@@ -51,14 +45,12 @@ node_t* newNode (int d) {
 
 // free the node pointed to by n_p
 // fragile assumption: this function does not free up nodes pointed to by left/right pointers
-void freeNode (node_t* n_p) {
+void freeNode(node_t* n_p) {
   if (n_p != NULL) {
     free(n_p);
   }
   return;
 };
-
-
 
 //---------------------------- QUEUE  ---------------------------- 
 // a queue - combining a head and a tail pointer
@@ -69,74 +61,62 @@ typedef struct q {
 
 // create new empty queue (head and tail are set to NULL)
 queue_t* newQueue() {
-  queue_t* q_p;   // temp pointer to hold newly created queue
-
-  // ***** INSERT YOUR CODE HERE *****
-  
+  queue_t* q_p = (queue_t*)malloc(sizeof(queue_t));   // temp pointer to hold newly created queue
+  q_p->head_p = NULL;
+  q_p->tail_p = NULL;
   return q_p;
 };
 
 // is the queue empty?
 bool isEmpty(queue_t* q_p) {
-  bool b = true;   // temporary bool to hold return value - initalize to default value
-
-  // ***** INSERT YOUR CODE HERE *****
-  
+  bool b = (q_p->head_p == NULL);   // temporary bool to hold return value - initialize to default value
   return b;
 };
 
 // function to add a new node with data d to tail of the queue
 void enqueue(queue_t* q_p, int d) {
-  node_t* n_p = NULL; // temp node pointer
+  node_t* n_p = newNode(d); // create a new node with data d
   
   if (q_p != NULL) {
-
     if (isEmpty(q_p)) {
       // queue is empty so insertion is easy
-
-      // ***** INSERT YOUR CODE HERE *****
-
+      q_p->head_p = n_p;
+      q_p->tail_p = n_p;
     } else {
       // queue is not empty
-
-      // ***** INSERT YOUR CODE HERE *****
-
+      q_p->tail_p->right_p = n_p;
+      n_p->left_p = q_p->tail_p;
+      q_p->tail_p = n_p;
     }    
   }
-  
   return;
 };
 
 // function to take the node off the head of the queue and return its value
 int dequeue(queue_t* q_p) {
   int t = -9999;      // temp int to hold return val with arbitrary error value of -9999
-  node_t* n_p = NULL; // temp node poitner
+  node_t* n_p = NULL; // temp node pointer
   
   if (q_p != NULL) {
     n_p = q_p->head_p;  // get a pointer to the head of the queue
 
     if (n_p != NULL) {
-	t = n_p->data;      // get the value of data in the head of the queue
+      t = n_p->data;      // get the value of data in the head of the queue
 
-	if (q_p->head_p  == q_p->tail_p) {      
-          // only one node in the queue, clear queue head and tail 
-
-          // ***** INSERT YOUR CODE HERE *****
-	  
-	} else {
-          // mulitple nodes in queue, clean up head pointer and new head of queue
-
-	  // ***** INSERT YOUR CODE HERE *****
-	  
-	}
-	
-	freeNode(n_p);  // free up the node that was dequeued
+      if (q_p->head_p == q_p->tail_p) {      
+        // only one node in the queue, clear queue head and tail 
+        q_p->head_p = NULL;
+        q_p->tail_p = NULL;
+      } else {
+        // multiple nodes in queue, clean up head pointer and new head of queue
+        q_p->head_p = n_p->right_p;
+        q_p->head_p->left_p = NULL;
+      }
+      freeNode(n_p);  // free up the node that was dequeued
     }
   }
-    
   return t;
 };
-
 
 // if queue is not empty, then clean it out -- then free the queue struct
 void freeQueue(queue_t* q_p) {
@@ -152,15 +132,12 @@ void freeQueue(queue_t* q_p) {
   return;
 };
 
-
 // create a random integer between 1 and n
 int getRandom(int n) {
   return ((rand() % n) + 1);
 }
 
-
-int main () {
-  
+int main() {
   int i;  // loop variable
   int t;  // temporary integer
   
@@ -168,11 +145,10 @@ int main () {
   queue_t* q1_p = newQueue();
   queue_t* q2_p = newQueue();
   
-
   // get random number seed
   srand((unsigned)time(NULL));
   
-  for (i=0; i<HOWMANY; i++)  {
+  for (i = 0; i < HOWMANY; i++)  {
     t = getRandom(MAXMAGNITUDE);
     printf("enqueue[1] %d\n", t);
     enqueue(q1_p, t);
