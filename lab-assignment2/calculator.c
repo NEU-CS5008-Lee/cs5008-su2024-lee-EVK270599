@@ -1,5 +1,6 @@
-//Kaustubha Eluri
-//eluri.k@northeastern.edu
+// name: Kaustubha Eluri 
+// email: eluri.k@northeastern.edu
+
 #include<stdio.h>
 #include <math.h>
 int main()

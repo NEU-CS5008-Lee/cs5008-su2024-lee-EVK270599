@@ -1,3 +1,6 @@
+// name: Kaustubha Eluri 
+// email: eluri.k@northeastern.edu
+
 #include <stdio.h>
 #define N 8 //Max. capacity of Queue
 

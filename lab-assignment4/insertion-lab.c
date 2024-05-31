@@ -1,5 +1,5 @@
-//Kaustubha Eluri
-//eluri.k@northeastern.edu
+// name: Kaustubha Eluri 
+// email: eluri.k@northeastern.edu
 
 //To perform insertion sort of integers stored in a file and display the output and store it in another file.
 #include <stdio.h>

@@ -1,3 +1,6 @@
+// name: Kaustubha Eluri 
+// email: eluri.k@northeastern.edu
+
 /*C Program to read and print the n employee details using structure and dynamic memory allocation*/
 #include <stdio.h>
 #include <stdlib.h>

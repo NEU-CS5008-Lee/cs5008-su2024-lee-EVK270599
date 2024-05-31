@@ -1,3 +1,6 @@
+// name: Kaustubha Eluri 
+// email: eluri.k@northeastern.edu
+
 #include <stdio.h>   // standard input/output library
 #include <stdbool.h> // standard boolean library: bool, true, false
 #include <stdlib.h>  // library that contains malloc, rand, and srand
