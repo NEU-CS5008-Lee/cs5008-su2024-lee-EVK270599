@@ -1,5 +1,5 @@
-// name: <your name here>
-// email: <your email here>
+// name: Kaustubha Eluri 
+// email: eluri.k@northeastern.edu
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,25 +31,38 @@ char upperChar(char c){
   }
 }
 
-
-
 // pick pivot and then sort small and big parts 
 void quicky(char* data, int left, int right) {
-
-  // ADD YOUR CODE HERE
-
-  return;
+  if (left < right) {
+    int pivot = partition(data, left, right);
+    quicky(data, left, pivot - 1);
+    quicky(data, pivot + 1, right);
+  }
 }
 
+int partition(char* data, int left, int right) {
+  char pivot = data[right];
+  int i = left - 1;
+  for (int j = left; j < right; j++) {
+    if (upperChar(data[j]) <= upperChar(pivot)) {
+      i++;
+      // swap data[i] and data[j]
+      char temp = data[i];
+      data[i] = data[j];
+      data[j] = temp;
+    }
+  }
+  // swap data[i + 1] and data[right] (or pivot)
+  char temp = data[i + 1];
+  data[i + 1] = data[right];
+  data[right] = temp;
+  return (i + 1);
+}
 
-
-int main(){
-
+int main() {
   char source[LIMIT]; // array to hold input data values
-
   int i;             // loop variable
   int j;             // loop variable
-
 
   //seed random numbers
   srand((unsigned)time(NULL));
@@ -64,7 +77,7 @@ int main(){
   for (i=0; i < ((LIMIT/20)+1); i++) {
     for (j=0; j<20; j++) {
       if (i*20+j < LIMIT) {
-	printf("%c ",source[i*20+j]);
+        printf("%c ",source[i*20+j]);
       }
     }
     printf("\n");
@@ -74,18 +87,17 @@ int main(){
   // do the sorting
   quicky(source, 0, LIMIT-1);
 
-  
   //print out sorted array in rows of 10
   printf("Destination array:\n");
   for (i=0; i < ((LIMIT/10)+1); i++) {
     for (j=0; j<10; j++) {
       if (i*10+j < LIMIT) {
-	printf("%c ",source[i*10+j]);
+        printf("%c ",source[i*10+j]);
       }
     }
     printf("\n");
   }
   printf("\n");
-  
+
   return 0;
 }
