@@ -1,4 +1,4 @@
-// name: Kaustubha Eluri 
+// name: Kaustubha Eluri
 // email: eluri.k@northeastern.edu
 
 #include<stdio.h>
