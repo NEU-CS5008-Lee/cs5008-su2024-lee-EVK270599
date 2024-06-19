@@ -1,5 +1,5 @@
-/*---enter your name here----*/
-/*---enter your email here-----*/
+// name: Kaustubha Eluri 
+// email: eluri.k@northeastern.edu
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -16,7 +16,7 @@ typedef struct avlnode
 /*---defining structure for AVL tree--*/
 typedef struct AVL{
     struct avlnode* root;
-}Tree;
+} Tree;
 
 /* creating a new Avl node*/
 node_t* NewNode(int data){
@@ -32,54 +32,47 @@ node_t* NewNode(int data){
 /*------------Creating a Tree------------------*/
 Tree* initTree(){
     Tree* t;
-    t=(Tree*)malloc(sizeof(Tree));
-    if(t==NULL){
-     printf("Memory is not allocated\n");
-     exit(1);
- }
-    t->root=NULL;
+    t = (Tree*)malloc(sizeof(Tree));
+    if(t == NULL){
+        printf("Memory is not allocated\n");
+        exit(1);
+    }
+    t->root = NULL;
     
     return t;
 }
 
 /* calculating maximum of 2 numbers*/
-int max(int a,int b){
-
-     if(a>b)
-         return a;
- else return b;
+int max(int a, int b){
+    return (a > b) ? a : b;
 }
 
 /* finding the height of the tree*/
 int height(node_t* node){
-
-    if(node==NULL)
+    if(node == NULL)
         return -1;
-
-     return node->height;
+    return node->height;
 }
 
 /* finding the balance factor of the node*/
 int Balance(node_t* node){
-    if(node==NULL)
+    if(node == NULL)
         return 0;
-
     return height(node->left) - height(node->right);
-    //height of Left subtree-height of right subtree.
+    // height of Left subtree - height of right subtree.
 }
 
 /* left rotation of the node and updating the height of 
    left and right subtree */
 node_t* LeftRotate(node_t* z){
-
     node_t* y = z->right;
     node_t* temp = y->left;
 
     y->left = z;
     z->right = temp;
 
-    z->height = max(height(z->left),height(z->right))+1;
-    y->height = max(height(y->left),height(y->right))+1;
+    z->height = max(height(z->left), height(z->right)) + 1;
+    y->height = max(height(y->left), height(y->right)) + 1;
 
     return y;
 }
@@ -87,26 +80,24 @@ node_t* LeftRotate(node_t* z){
 /* function to perform the Right rotation and updating the height 
    of left and right subtree */
 node_t* RightRotate(node_t *z){
-
     node_t* y = z->left;
     node_t* temp = y->right;
 
     y->right = z;
     z->left = temp;
 
-    /*update the height after right rotation*/
-    z->height = max(height(z->left),height(z->right))+1;
-    y->height = max(height(y->left),height(y->right))+1;
+    /* update the height after right rotation */
+    z->height = max(height(z->left), height(z->right)) + 1;
+    y->height = max(height(y->left), height(y->right)) + 1;
 
     return y;
 }
 
 /* function to display the preorder traversal of AVL tree */
 void preorder(node_t *temp){
-    
-    if(temp!=NULL)
+    if(temp != NULL)
     {
-        printf("%d\n",temp->data);
+        printf("%d\n", temp->data);
         preorder(temp->left);
         preorder(temp->right);
     }
@@ -114,8 +105,7 @@ void preorder(node_t *temp){
 
 /*---free the AVL nodes----*/
 void freenode(node_t *p){
-
-    if(p!=NULL)
+    if(p != NULL)
     {
         freenode(p->left);
         freenode(p->right);
@@ -128,31 +118,40 @@ void freenode(node_t *p){
    a AVL tree using four cases*/
 node_t* Insert(node_t* root, int data)
 {
-    
-    
-    //insert your code here
+    // Base case: if the tree is empty, return a new node
+    if (root == NULL)
+        return NewNode(data);
 
+    // If the data to be inserted is less than the root's data, insert it into the left subtree
+    if (data < root->data)
+        root->left = Insert(root->left, data);
+    // If the data to be inserted is greater than the root's data, insert it into the right subtree
+    else if (data > root->data)
+        root->right = Insert(root->right, data);
+    // Equal data are not allowed in BST
+    else
+        return root;
 
-    /*updating the height after insertion of the node*/
-    root->height = max(height(root->left),height(root->right))+1;
+    /* updating the height after insertion of the node */
+    root->height = max(height(root->left), height(root->right)) + 1;
     
-    /*checking the balance factor to check the tree is balanced */
+    /* checking the balance factor to check the tree is balanced */
     int balance = Balance(root);
 
-    /* left- left case*/
-    if(balance > 1 && data < root->left->data)
+    /* left-left case */
+    if (balance > 1 && data < root->left->data)
         return RightRotate(root);
-    /* Right Right Case*/
-    if(balance < -1 && data > root->right->data)
+    /* right-right case */
+    if (balance < -1 && data > root->right->data)
         return LeftRotate(root);
-    /*Left Right Case*/
-    if(balance > 1 && data > root->left->data)
+    /* left-right case */
+    if (balance > 1 && data > root->left->data)
     {
         root->left = LeftRotate(root->left);
         return RightRotate(root);
     }
-    /* Right Left Case*/
-    if(balance < -1 && data < root->right->data)
+    /* right-left case */
+    if (balance < -1 && data < root->right->data)
     {
         root->right = RightRotate(root->right);
         return LeftRotate(root);
@@ -163,16 +162,16 @@ node_t* Insert(node_t* root, int data)
 /*------------------main program-------------------------------*/
 int main()
 {
-    Tree* T=initTree();
-    int n,x,i;
+    Tree* T = initTree();
+    int n, x, i;
     printf("Enter the number of elements:\n");
     scanf("%d", &n);
     printf("Enter the tree data\n");
 
-    for(i=0;i<n;i++)
+    for(i = 0; i < n; i++)
     {
         scanf("%d", &x);
-        T->root = Insert(T->root,x);
+        T->root = Insert(T->root, x);
     }
 
     printf("The output is:\n");

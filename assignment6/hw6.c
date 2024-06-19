@@ -1,5 +1,5 @@
-// name: <your name here>
-// email: <your email here>
+// name: Kaustubha Eluri 
+// email: eluri.k@northeastern.edu
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,7 +16,7 @@ typedef struct tnd {
   struct tnd* right;
 } tnode_t;
 
-// "new" function to create a tree node, set data value to d and childrent to NULL
+// "new" function to create a tree node, set data value to d and children to NULL
 tnode_t* newTNode(char d) {
   tnode_t* np;
   np = (tnode_t*)malloc(sizeof(tnode_t));
@@ -36,7 +36,6 @@ void freeTNode(tnode_t* np) {
     free(np);
   }
 }
-
 
 // ========================== STRING MANIPULATION - EXTRACT FIRST CHARACTER  ==========================
 
@@ -102,7 +101,6 @@ void insertTNode (tnode_t* rp, char* s) {
   return;
 }
 
-
 // ========================== QUEUE DEFINITIONS ==========================
 
 //---------------------------- QUEUE NODES ---------------------------- 
@@ -133,8 +131,6 @@ void freeQNode (qnode_t* np) {
   }
   return;
 };
-
-
 
 //---------------------------- QUEUE  ---------------------------- 
 // a queue - combining a head and a tail pointer
@@ -218,7 +214,6 @@ tnode_t* dequeue(queue_t* qp) {
   return tp;    // return the tree node from the head of the queue
 };
 
-
 // if queue is not empty, then clean it out -- then free the queue struct
 void freeQueue(queue_t* qp) {
   if (qp != NULL) {
@@ -233,46 +228,59 @@ void freeQueue(queue_t* qp) {
   return;
 };
 
-
 // ========================== BEGIN INSERT FUNCTION DEFS TO WALK TREE ==========================
 // define 4 functions - preorder, inorder, postorder, breadthFirst to walk tree, printing out data (char)
 // associated with each node visited:
-// void preorder (tnode_t* np) {}
-// void inorder (tnode_t* np) {}
-// void postorder (tnode_t* np) {}
-// void breadthFirst (tnode_t* np) {}
 
 void preorder (tnode_t* np) {
-  // INSERT YOUR CODE HERE
-
-  return;
+  if (np != NULL) {
+    printf("%c", np->data);  // Print data of node
+    preorder(np->left);      // Recur on left subtree
+    preorder(np->right);     // Recur on right subtree
+  }
 }
 
 void inorder (tnode_t* np) {
-  // INSERT YOUR CODE HERE
-  
-  return;
+  if (np != NULL) {
+    inorder(np->left);       // Recur on left subtree
+    printf("%c", np->data);  // Print data of node
+    inorder(np->right);      // Recur on right subtree
+  }
 }
 
 void postorder (tnode_t* np) {
-  // INSERT YOUR CODE HERE
-  
-  return;
+  if (np != NULL) {
+    postorder(np->left);     // Recur on left subtree
+    postorder(np->right);    // Recur on right subtree
+    printf("%c", np->data);  // Print data of node
+  }
 }
-
 
 void breadthFirst (tnode_t* root) {
-  // INSERT YOUR CODE HERE
-  
-  return;
+  if (root == NULL) {
+    return;
+  }
+
+  queue_t* q = newQueue();
+  enqueue(q, root);
+
+  while (!isEmpty(q)) {
+    tnode_t* node = dequeue(q);
+    printf("%c", node->data);
+
+    if (node->left != NULL) {
+      enqueue(q, node->left);
+    }
+
+    if (node->right != NULL) {
+      enqueue(q, node->right);
+    }
+  }
+
+  freeQueue(q);
 }
 
-
-
 // ========================== END INSERT FUNCTIONS HERE TO WALK TREE ==========================
-
-
-
 
 // ========================== MAIN PROGRAM  ==========================
 int main() {
@@ -282,7 +290,6 @@ int main() {
   // dna is a string defining the content and structure of the tree in pre-order with '\n' for NULL pointers
   char dna[MAX_STRING] = "ABDHP\n\nQ\n\nIR\n\nS\n\nEJT\n\nU\n\nKV\n\nW\n\nCFL\n\nMX\n\nY\n\nGN\nZ\n\nO\n\n";
 
-  
   // prime the pump - add the first node to the tree and then recursively call on children
   rootp = NULL;
      
@@ -324,8 +331,3 @@ int main() {
 
   return 0;
 }
-
-
-
-
-
