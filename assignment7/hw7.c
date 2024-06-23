@@ -43,8 +43,6 @@ void appendChar(char* s, char c) {
     strcat(s, charToStr);
 }
 
-
-
 int main () {
 
   char inputLine[MAXSTRING];   // temporary string to hold input line
@@ -79,44 +77,105 @@ int main () {
       nextChar = 0;
       state = STARTSTATE; 
       strcpy(temp,"");       // temp = ""
+      strcpy(cityStr,"");    // clear cityStr
 
       if (nextChar >= strlen(inputLine)){
-	// if no input string then go to ERRORSTATE
-	state = ERRORSTATE;
+        // if no input string then go to ERRORSTATE
+        state = ERRORSTATE;
       } 
 
       while ((state != ERRORSTATE) && (state != ACCEPTSTATE)) {
-	switch (state) {
-	  case STARTSTATE:
-	    // look a digit to confirm a valid line
-	    if (isDigit(inputLine[nextChar])) {
-	      state = S1;
-	      appendChar(temp, inputLine[nextChar]);
-	    } else {
-	      state = ERRORSTATE;
-	    }  
-	    break;
+        switch (state) {
+          case STARTSTATE:
+            // look a digit to confirm a valid line
+            if (isDigit(inputLine[nextChar])) {
+              state = S1;
+              appendChar(temp, inputLine[nextChar]);
+            } else {
+              state = ERRORSTATE;
+            }  
+            break;
+          case S1:
+            if (isDigit(inputLine[nextChar])) {
+              appendChar(temp, inputLine[nextChar]);
+            } else if (inputLine[nextChar] == ',') {
+              state = S2;
+              lineNum = atoi(temp); // convert line number to integer
+              strcpy(temp, ""); // reset temp
+            } else {
+              state = ERRORSTATE;
+            }
+            break;
+          case S2:
+            if (inputLine[nextChar] == '"') {
+              state = S3;
+            } else {
+              state = ERRORSTATE;
+            }
+            break;
+          case S3:
+            if (inputLine[nextChar] != '"') {
+              appendChar(cityStr, inputLine[nextChar]);
+            } else {
+              state = S4;
+            }
+            break;
+          case S4:
+            if (inputLine[nextChar] == ',') {
+              state = S5;
+            } else {
+              state = ERRORSTATE;
+            }
+            break;
+          case S5:
+            if (inputLine[nextChar] == '"') {
+              state = S6;
+            } else if (inputLine[nextChar] == '(') {
+              state = ACCEPTSTATE;
+              popInt = 0; // population is zero
+            } else {
+              state = ERRORSTATE;
+            }
+            break;
+          case S6:
+            if (isDigit(inputLine[nextChar])) {
+              appendChar(temp, inputLine[nextChar]);
+            } else if (inputLine[nextChar] == ',' || inputLine[nextChar] == '"') {
+              // handle commas in the population number
+              // if we encounter a comma, we continue appending digits
+              // if we encounter a double quote, we finalize the population
+              if (inputLine[nextChar] == '"') {
+                state = ACCEPTSTATE;
+                // remove commas from temp and convert to integer
+                char popStr[MAXSTRING];
+                int popStrIndex = 0;
+                for (int i = 0; i < strlen(temp); i++) {
+                  if (temp[i] != ',') {
+                    popStr[popStrIndex++] = temp[i];
+                  }
+                }
+                popStr[popStrIndex] = '\0';
+                popInt = atoi(popStr);
+              }
+            } else {
+              state = ERRORSTATE;
+            }
+            break;
+          case ACCEPTSTATE:
+            // nothing to do - we are done!
+            break;
+          default:
+            state = ERRORSTATE;
+            break;
+        } // end switch
 
-
-	  // ADD YOUR CODE HERE
- 
-	    
-	  case ACCEPTSTATE:
-	    // nothing to do - we are done!
-	    break;
-	    
-	  default:
-	    state = ERRORSTATE;
-	    break;
-	} // end switch
-
-	// advance input
-	nextChar++;
-	
-      }	// end while state machine loop
+        // advance input
+        nextChar++;
+      
+      } // end while state machine loop
 
       // ***** END FINITE STATE MACHINE *****
-	  
+      
 
       // process the line - print out raw line and the parsed fields
       printf("> %.60s\n", inputLine);
