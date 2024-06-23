@@ -1,5 +1,5 @@
-// name: <your name here>
-// email: <your email here>
+// name: Kaustubha Eluri
+// email: eluri.k@northeastern.edu
 
 // format of document is a bunch of data lines beginning with an integer (rank which we ignore)
 // then a ',' followed by a double-quoted string (city name)

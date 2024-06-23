@@ -1,5 +1,5 @@
-// name: <your name here>
-// email: <your email here>
+// name: Kaustubha Eluri
+// email: eluri.k@northeastern.edu
 
 // Hash table with doubly linked list for chaning/
 #include <stdio.h>
