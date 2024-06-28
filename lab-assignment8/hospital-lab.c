@@ -1,6 +1,7 @@
 /* Lab Assignment for Hospital ER */
-//enter your name here
-//enter your email here
+// name: Kaustubha Eluri
+// email: eluri.k@northeastern.edu
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -48,16 +49,29 @@ void heapify(pq*p2,int n, int i ){
 
     int lchild=2*i+1;/*left =2*i+1*/
     int rchild=2*i+2;/*right=2*i+2*/
+    
     /*insert your code here*/
+    if (lchild < n && p2->heap[lchild].priority > p2->heap[largest].priority)
+        largest = lchild;
 
+    if (rchild < n && p2->heap[rchild].priority > p2->heap[largest].priority)
+        largest = rchild;
+
+    if (largest != i) {
+        swap(&p2->heap[i], &p2->heap[largest]);
+        heapify(p2, n, largest);
+    }
 }
 
 /* To shift the new node (inserted at the end) up at its appropriate position in order to satisfy the max heap property */ 
 void shiftUp(pq* p2,int i)
 {
     /*insert your code here*/
-       
-    
+    int parent = (i - 1) / 2;
+    if (i && p2->heap[parent].priority < p2->heap[i].priority) {
+        swap(&p2->heap[i], &p2->heap[parent]);
+        shiftUp(p2, parent);
+    }    
 }
  
 /*function to insert patient info into the heap*/
