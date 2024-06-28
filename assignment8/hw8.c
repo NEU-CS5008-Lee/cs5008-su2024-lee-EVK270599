@@ -21,16 +21,6 @@
 #define ACCEPTSTATE 10
 #define ERRORSTATE 11
 
-typedef struct Node {
-    char city[MAXSTRING];
-    int population;
-    struct Node* next;
-} Node;
-
-Node* hashTable1[TABLE_SIZE];
-Node* hashTable2[TABLE_SIZE];
-Node* hashTable3[TABLE_SIZE];
-
 // check if a character c is a digit
 bool isDigit(char c) {
     return ('0' <= c && c <= '9');
@@ -40,54 +30,76 @@ bool isDigit(char c) {
 void appendChar(char* s, char c) {
     char charToStr[2];           // convert char to string
     charToStr[0] = c;
-    charToStr[1] = '\0';          // put NUL to terminate string of one character
+    charToStr[1] = '\0';         // put NUL to terminate string of one character
     strcat(s, charToStr);
 }
 
-// hash function 1: length of the city/state string (modulo size of table)
-int hashFunction1(char* str) {
-    return strlen(str) % TABLE_SIZE;
+// Hash table node
+typedef struct Node {
+    char city_state[MAXSTRING];
+    int population;
+    struct Node* next;
+} Node;
+
+// Initialize hash tables
+Node* hashTable1[TABLE_SIZE];
+Node* hashTable2[TABLE_SIZE];
+Node* hashTable3[TABLE_SIZE];
+
+unsigned int hash_function_1(const char* key) {
+    return strlen(key) % TABLE_SIZE;
 }
 
-// hash function 2: sum of the character codes of the city/state string (modulo size of table)
-int hashFunction2(char* str) {
-    int sum = 0;
-    while (*str) {
-        sum += *str++;
+unsigned int hash_function_2(const char* key) {
+    unsigned int sum = 0;
+    while (*key) {
+        sum += (unsigned char)(*key);
+        key++;
     }
     return sum % TABLE_SIZE;
 }
 
-// hash function 3: product of the first 2 character codes in city/state string (modulo size of table)
-int hashFunction3(char* str) {
-    if (strlen(str) < 2) return 0; // handle short strings
-    return (str[0] * str[1]) % TABLE_SIZE;
+unsigned int hash_function_3(const char* key) {
+    if (strlen(key) < 2) return 0;
+    return ((unsigned char)key[0] * (unsigned char)key[1]) % TABLE_SIZE;
 }
 
-void insert(Node* table[], int index, char* city, int population) {
+void insert(Node* hashTable[], const char* city_state, int population, unsigned int (*hash_function)(const char*)) {
+    unsigned int hashIndex = hash_function(city_state);
     Node* newNode = (Node*)malloc(sizeof(Node));
-    strcpy(newNode->city, city);
+    strcpy(newNode->city_state, city_state);
     newNode->population = population;
-    newNode->next = table[index];
-    table[index] = newNode;
+    newNode->next = hashTable[hashIndex];
+    hashTable[hashIndex] = newNode;
 }
 
-void printHashTable(Node* table[], char* tableName) {
-    printf("\n***** %s *****\n", tableName);
-    printf("==========================\n");
+void print_hash_table(Node* hashTable[], const char* name) {
+    printf("\n%s:\n", name);
     for (int i = 0; i < TABLE_SIZE; i++) {
-        if (table[i]) {
-            printf("TABLE[%d]:\n", i);
-            Node* current = table[i];
+        Node* current = hashTable[i];
+        if (current) {
+            printf("Index %d:\n", i);
             while (current) {
-                printf("key/value: [%s] / [%d]\n", current->city, current->population);
+                printf("\t%s: %d\n", current->city_state, current->population);
                 current = current->next;
             }
         }
     }
 }
 
-int main () {
+void free_hash_table(Node* hashTable[]) {
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        Node* current = hashTable[i];
+        while (current) {
+            Node* temp = current;
+            current = current->next;
+            free(temp);
+        }
+        hashTable[i] = NULL;
+    }
+}
+
+int main() {
     char inputLine[MAXSTRING];   // temporary string to hold input line
     char cityStr[MAXSTRING];     // city name
     int lineNum;                 // line number (city rank)
@@ -95,28 +107,24 @@ int main () {
     int state;                   // FSM state
     int nextChar;                // index of next character in input string
     char temp[MAXSTRING];        // temp string to build up extracted strings from input characters
-    
+
     FILE* fp;
-    fp = fopen("pop.csv","r");
+    fp = fopen("pop.csv", "r");
 
     if (fp != NULL) {
         fgets(inputLine, MAXSTRING, fp); // prime the pump for the first line
 
-        // Initialize hash tables
-        memset(hashTable1, 0, sizeof(hashTable1));
-        memset(hashTable2, 0, sizeof(hashTable2));
-        memset(hashTable3, 0, sizeof(hashTable3));
-
+        // ***** BEGIN FINTITE STATE MACHINE *****
         while (feof(fp) == 0) {
             nextChar = 0;
-            state = STARTSTATE; 
-            strcpy(temp,"");       // temp = ""
-            strcpy(cityStr,"");    // clear cityStr
+            state = STARTSTATE;
+            strcpy(temp, "");       // temp = ""
+            strcpy(cityStr, "");    // clear cityStr
 
             if (nextChar >= strlen(inputLine)) {
                 // if no input string then go to ERRORSTATE
                 state = ERRORSTATE;
-            } 
+            }
 
             while ((state != ERRORSTATE) && (state != ACCEPTSTATE)) {
                 switch (state) {
@@ -127,7 +135,7 @@ int main () {
                             appendChar(temp, inputLine[nextChar]);
                         } else {
                             state = ERRORSTATE;
-                        }  
+                        }
                         break;
                     case S1:
                         if (isDigit(inputLine[nextChar])) {
@@ -205,28 +213,32 @@ int main () {
 
                 // advance input
                 nextChar++;
+
             } // end while state machine loop
 
-            if (state == ACCEPTSTATE) {
-                int index1 = hashFunction1(cityStr);
-                int index2 = hashFunction2(cityStr);
-                int index3 = hashFunction3(cityStr);
+            // ***** END FINITE STATE MACHINE *****
 
-                insert(hashTable1, index1, cityStr, popInt);
-                insert(hashTable2, index2, cityStr, popInt);
-                insert(hashTable3, index3, cityStr, popInt);
-            }
+            // insert into hash tables
+            insert(hashTable1, cityStr, popInt, hash_function_1);
+            insert(hashTable2, cityStr, popInt, hash_function_2);
+            insert(hashTable3, cityStr, popInt, hash_function_3);
 
             // get next line
             fgets(inputLine, MAXSTRING, fp);
+
         } // end while file input loop
 
         fclose(fp);
 
-        // Print out the contents of the hash tables
-        printHashTable(hashTable1, "HASH TABLE 1");
-        printHashTable(hashTable2, "HASH TABLE 2");
-        printHashTable(hashTable3, "HASH TABLE 3");
+        // Print hash tables
+        print_hash_table(hashTable1, "Hash Table 1");
+        print_hash_table(hashTable2, "Hash Table 2");
+        print_hash_table(hashTable3, "Hash Table 3");
+
+        // Free hash tables
+        free_hash_table(hashTable1);
+        free_hash_table(hashTable2);
+        free_hash_table(hashTable3);
 
     } else {
         printf("File not found!\n");
