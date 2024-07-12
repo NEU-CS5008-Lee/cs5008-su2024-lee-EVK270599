@@ -19,7 +19,6 @@ typedef struct tr {
   int lastStep;     // last step along the path to the start node
 } trow_t;
 
-
 // is the set represented by boolean array s of size "size" not empty? empty means all elements are false
 bool setNotEmpty(bool s[], int size) {
   int i;
@@ -42,7 +41,6 @@ int minDistance(trow_t table[], int size, bool valid[]) {
   vertex = -1;       // error return code
   dist = INFINITY;
   
-
   for (i=0; i<size; i++) {
     if (valid[i] && (table[i].distance < dist)) {
       // we found a new min distance
@@ -81,7 +79,6 @@ void removeVertex(int v, bool s[], int size) {
 
   return;
 }
-
 
 // print the distance table
 void printTable(trow_t table[], int size, int start) {
@@ -125,7 +122,6 @@ void printSet(bool s[], int size) {
   printf("\n");
 }
 
-  
 int main () {
 
   // define graph as association matrix
