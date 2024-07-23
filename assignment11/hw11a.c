@@ -1,32 +1,32 @@
-// name: <your name here>
-// email: <your email here>
+// name: Kaustubha Eluri
+// email: eluri.k@northeastern.edu
 
 #include <stdio.h>
 
-int d[20]; // This array can be used for memoization
+long long int d[21]; // Initialize an array to store the results
 
 long long int dp(int n) {
-    // Base cases
-    if (n == 0) return 0;
-    if (n == 1) return 1;
+    if (n == 0) return 1; // Base case: 1 way to tile a 2 x 0 floor
+    if (n == 1) return 1; // Base case: 1 way to tile a 2 x 1 floor
 
-    // Check if value already computed
-    if (d[n] != -1) return d[n];
+    if (d[n] != 0) return d[n]; // Use memoization to return already computed results
 
-    // Recursive case with memoization
+    // The recurrence relation: D[i] = D[i - 1] + D[i - 2]
     d[n] = dp(n - 1) + dp(n - 2);
+
     return d[n];
 }
 
 int main(void) {
     int n;
+    printf("Enter a number: ");
     scanf("%d", &n);
 
-    // Initialize the memoization array with -1
-    for (int i = 0; i < 20; i++) {
-        d[i] = -1;
+    if (n < 0 || n > 20) {
+        printf("Please enter a number between 0 and 20.\n");
+        return 1;
     }
 
-    printf("%lld\n", dp(n));
+    printf("The number of ways to tile a 2 x %d floor is %lld\n", n, dp(n));
     return 0;
 }
